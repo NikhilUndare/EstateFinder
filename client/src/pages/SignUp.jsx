@@ -20,7 +20,7 @@ export default function SignUp() {
     e.preventDefault();
 
     if(!formData.username || !formData.email || !formData.password){
-      setError("Kindly fill all details first");
+      setError("*Kindly fill all details first");
       return false
     }
     return true;
@@ -80,7 +80,7 @@ export default function SignUp() {
         </Link>
         
       </div>
-      {error && <p className='text-red-500 mt-5'>{error}</p>}
+      {error && <p className='text-red-500 mt-3'>{error}</p>}
     </div>
   )
 }
