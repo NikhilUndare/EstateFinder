@@ -3,6 +3,7 @@ import { Link ,useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart ,signInSuccess ,signInFailure } from '../redux/user/userSlice';
+import Oauth from '../components/Oauth';
 
 export default function SignIn() {
 
@@ -72,9 +73,10 @@ export default function SignIn() {
         
         <input type='email' placeholder='email' className='border p-3 rounded-lg ' id='email' onChange={handleChange} />
         <input type='password' placeholder='password' className='border p-3 rounded-lg ' id='password' onChange={handleChange} />
-        <button disabled={loading} className=' bg-slate-700 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80'>
+        <button disabled={loading} className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80'>
           {loading ? 'Loading...' : 'Sign In'}
         </button>
+        <Oauth/>
       </form>
       <div className='flex gap-3 mt-5' >
         <p > Dont have an account? </p>

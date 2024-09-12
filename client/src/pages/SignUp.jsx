@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link ,useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import Oauth from '../components/Oauth';
 export default function SignUp() {
 
   const [formData, setFormData] = useState({});
@@ -69,9 +70,10 @@ export default function SignUp() {
         <input type='text' placeholder='username' className='border p-3 rounded-lg ' id='username' onChange={handleChange} />
         <input type='email' placeholder='email' className='border p-3 rounded-lg ' id='email' onChange={handleChange} />
         <input type='password' placeholder='password' className='border p-3 rounded-lg ' id='password' onChange={handleChange} />
-        <button disabled={loading} className=' bg-slate-700 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80'>
+        <button disabled={loading} className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80'>
           {loading ? 'Loading...' : 'Sign Up'}
         </button>
+        <Oauth />
       </form>
       <div className='flex gap-3 mt-5' >
         <p > Already have an account? </p>
