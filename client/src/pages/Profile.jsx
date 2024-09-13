@@ -3,15 +3,18 @@ import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { useRef } from 'react';
 import { app } from '../firebase';
+import {updateUserStart ,updateUserSuccess,updateUserfailure} from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 
 export default function Profile() {
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser ,loading,error } = useSelector((state) => state.user)
   const [file, setFile] = useState(undefined);
   const [filePercent, setFilePercent] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const fileRef = useRef(null);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (file) {
@@ -46,11 +49,40 @@ export default function Profile() {
 
   }
 
+  const handleClick = (e) => {
+    setFormData({...formData, [e.target.id] : e.target.value})
+  }
+
+  const handleSubmit = async (e) => {
+     e.preventDefault();
+
+     try {
+       dispatch(updateUserStart());
+       const res = await fetch(`/api/user/update/${currentUser._id}` , {
+        method : 'POST',
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        body : JSON.stringify(formData)
+       }) ;
+       const data = await res.json();
+       if(data.success == false){
+         dispatch(updateUserfailure(data.message));
+         return
+       }
+       dispatch(updateUserSuccess(data));
+       toast.success("User updated succefully")
+
+     } catch (error) {
+      dispatch(updateUserfailure(error.message))
+     }
+
+  }
 
   return (
     <div className='  sm:max-w-xl bg-gradient-to-b from-slate-300  mt-4 px-5 py-2 mx-auto rounded-xl shadow-xl '>
       <h1 className='text-3xl text-slate-700 text-center font-bold my-2 tracking-wide'>Profile</h1>
-      <form className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input
           onChange={(e) => setFile(e.target.files[0])}
           type='file'
@@ -74,18 +106,18 @@ export default function Profile() {
           }
         </p>
 
-        <input type='text' placeholder='username' className='border p-3 rounded-lg ' id='username' />
-        <input type='email' placeholder='email' className='border p-3 rounded-lg ' id='email' />
-        <input type='password' placeholder='password' className='border p-3 rounded-lg ' id='password' />
-        <button className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider '>
-          update
+        <input type='text' defaultValue={currentUser.username} placeholder='username' className='border p-3 rounded-lg ' id='username'  onChange={handleClick} />
+        <input type='email' defaultValue={currentUser.email} placeholder='email' className='border p-3 rounded-lg ' id='email'  onChange={handleClick}/>
+        <input type='password' placeholder='password' className='border p-3 rounded-lg ' id='password' onChange={handleClick} />
+        <button disabled={loading}  className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider '>
+          { loading ? 'Loading...' : 'Update'}
         </button>
       </form>
       <div className='flex justify-between mt-5 mb-3 px-2'>
         <p className='font-semibold  text-red-600 hover:text-red-700 hover:underline '>Delete Account</p>
         <p className='font-semibold  text-red-600 hover:text-red-700 hover:underline '>Sign Out</p>
       </div>
-
+      <p className=' text-red-600 mt-3 font-semibold text-center'>{error ? error : ""}</p>
     </div>
   )
 }
