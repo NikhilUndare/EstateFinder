@@ -4,7 +4,8 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { useRef } from 'react';
 import { app } from '../firebase';
 import {updateUserStart ,updateUserSuccess,updateUserfailure, 
-   deleteUserStart , deleteUserSuccess , deleteUserFailure
+   deleteUserStart , deleteUserSuccess , deleteUserFailure,
+   signOutUserStart , signOutUserSuccess,signOutUserFailure
 } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
@@ -100,6 +101,23 @@ export default function Profile() {
       }
    }
 
+   const handleSignOut = async() => {
+      try {
+        dispatch(signOutUserStart())
+        const res = await fetch('/api/auth/signout');
+        const data = res.json();
+        if(data.success === false){
+          dispatch(signOutUserFailure(data.message))
+          return;
+        }
+        dispatch(signOutUserSuccess());
+        toast.success("User has been logged out!")
+       // navigator('/sign-in')
+      } catch (error) {
+        dispatch(signOutUserFailure(error.message))
+      }
+   }
+
   return (
     <div className='  sm:max-w-xl bg-gradient-to-b from-slate-300  mt-4 px-5 py-2 mx-auto rounded-xl shadow-xl '>
       <h1 className='text-3xl text-slate-700 text-center font-bold my-2 tracking-wide'>Profile</h1>
@@ -136,7 +154,7 @@ export default function Profile() {
       </form>
       <div className='flex justify-between mt-5 mb-3 px-2'>
         <p onClick={handleDelete} className='font-semibold  text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Delete Account</p>
-        <p className='font-semibold  text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Sign Out</p>
+        <p onClick={handleSignOut} className='font-semibold  text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Sign Out</p>
       </div>
       <p className=' text-red-600 mt-3 font-semibold text-center'>{error ? error : ""}</p>
     </div>
