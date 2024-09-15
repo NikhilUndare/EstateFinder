@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { CiCircleRemove } from "react-icons/ci";
 import { Link  } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
@@ -17,6 +18,8 @@ export default function Profile() {
   const [filePercent, setFilePercent] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [showListingError , setShowListingError] = useState(false);
+  const [userListings ,setUserListings] = useState([]);
   const fileRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -119,6 +122,23 @@ export default function Profile() {
       }
    }
 
+    const handleShowListings = async() => {
+       try {
+        setShowListingError(false)
+        const res = await fetch(`/api/user/listings/${currentUser._id}`);
+        const data = await res.json();
+        
+        if(data.success === false){
+          setShowListingError(true)
+          return;
+        }
+        setUserListings(data)
+       } catch (error) {
+        setShowListingError(true)
+       }
+    }
+
+
   return (
     <div className='  sm:max-w-xl bg-gradient-to-b from-slate-300  mt-4 px-5 py-2 mx-auto rounded-xl shadow-xl '>
       <h1 className='text-3xl text-slate-700 text-center font-bold my-2 tracking-wide'>Profile</h1>
@@ -159,6 +179,36 @@ export default function Profile() {
         <p onClick={handleSignOut} className='font-semibold  text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Sign Out</p>
       </div>
       <p className=' text-red-600 mt-3 font-semibold text-center'>{error ? error : ""}</p>
+      <button onClick={handleShowListings} className='w-full text-lg font-semibold  text-green-600 hover:text-green-700 cursor-pointer hover:underline '>Show Listings</button>
+       { userListings && userListings.length > 0 &&  <div className='flex justify-end mt-2 px-5'>
+        <CiCircleRemove onClick={() => setUserListings(false)} className='w-8 h-8 hover : shadow-2xl ' />
+       </div> }
+      <p className=' text-red-600 mt-3 font-semibold text-center'>{showListingError ? 'Error in showing Listings' : ''}</p>
+      { userListings && userListings.length > 0 && 
+
+        <div className=' flex flex-col gap-4'> 
+          <div> 
+            <h1 className='text-2xl font-semibold text-gray-700 text-center'>Your Listings</h1>
+          </div>
+          
+           { 
+          userListings.map((listing) => (
+            <div key={listing._id} className='p-2 mb-2 flex gap-2 justify-between items-center border border-gray-300'> 
+               <Link to={`/listing/${listing._id}`} >
+                 <img className='w-20 h-20 object-contain' src={listing.imageUrls[0]} alt='listing image' />
+                </Link>
+                <Link className='flex-1 ml-4' to={`/listing/${listing._id}`}>
+                 <p className='font-semibold  text-gray-700  truncate hover:underline'>{listing.name}</p>
+                </Link>
+                <div className='flex flex-col'> 
+                 <button className='font-semibold uppercase  text-slate-600 hover:text-slate-700 cursor-pointer hover:underline '>Edit</button>
+                 <button className='font-semibold uppercase text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Delete</button>
+                </div>
+            </div>
+          )) 
+          } </div>
+        
+       }
     </div>
   )
 }
