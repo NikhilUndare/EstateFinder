@@ -20,6 +20,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const [showListingError , setShowListingError] = useState(false);
   const [userListings ,setUserListings] = useState([]);
+  const [deleteListingError , setDeletelistingError] = useState(false);
   const fileRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -137,7 +138,24 @@ export default function Profile() {
         setShowListingError(true)
        }
     }
-
+   
+    const handleDeleteListing = async (listingId) => {
+       try {
+         const res = await fetch(`/api/listing/delete/${listingId}`,{
+          method : 'DELETE'
+         })
+         const data = await res.json();
+         if(data.success === false){
+          setDeletelistingError(true);
+          return
+         }
+         setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
+         toast.success('Listing deleted Successfully!')
+       } catch (error) {
+        setDeletelistingError(true);
+        console.log(error.message)
+       }
+    }
 
   return (
     <div className='  sm:max-w-xl bg-gradient-to-b from-slate-300  mt-4 px-5 py-2 mx-auto rounded-xl shadow-xl '>
@@ -202,11 +220,14 @@ export default function Profile() {
                 </Link>
                 <div className='flex flex-col'> 
                  <button className='font-semibold uppercase  text-slate-600 hover:text-slate-700 cursor-pointer hover:underline '>Edit</button>
-                 <button className='font-semibold uppercase text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Delete</button>
+                 <button onClick={() => handleDeleteListing(listing._id)} className='font-semibold uppercase text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Delete</button>
                 </div>
             </div>
           )) 
-          } </div>
+          } 
+          {deleteListingError && 
+          <p className=' text-red-600 mt-3 font-semibold text-center'>Failed to delete listing </p> }
+          </div>
         
        }
     </div>
