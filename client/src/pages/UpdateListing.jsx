@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import { useSelector } from 'react-redux'
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export default function CreateListing() {
@@ -27,7 +27,23 @@ export default function CreateListing() {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const params = useParams();
     console.log(formData);
+
+    useEffect(()=> {
+        const fetchListing = async() => {
+           const listingId = params.id;
+           const res = await fetch(`/api/listing/get/${listingId}`);
+           const data = await res.json();
+           if(data.success === false){
+            console.log(error.message);
+            return
+           }
+           setFormData(data);
+        }
+
+        fetchListing();
+    },[])
 
     const handleImageSubmit = (e) => {
         if (files.length < 1) {
@@ -119,7 +135,7 @@ export default function CreateListing() {
             }
             setLoading(true);
             setError(false);
-            const res = await fetch('/api/listing/create', {
+            const res = await fetch(`/api/listing/update/${params.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -134,7 +150,7 @@ export default function CreateListing() {
             if (data.success === false) {
                 setError(data.message);
             }
-           toast.success('Successfully created a listing') 
+           toast.success('Successfully updated a listing') 
            navigate(`/listing/${data._id}`)
         } catch (error) {
             setError(error.message);
@@ -143,7 +159,7 @@ export default function CreateListing() {
     }
     return (
         <main className=' mt-2 px-6 pt-2 pb-4 max-w-5xl mx-auto bg-gradient-to-b from-slate-300 rounded-xl shadow-2xl'>
-            <p className='text-3xl text-slate-700 text-center font-bold mt-2 mb-6 tracking-wide'>Create Listing</p>
+            <p className='text-3xl text-slate-700 text-center font-bold mt-2 mb-6 tracking-wide'>Update Listing</p>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
                 <div className='flex flex-col gap-4 flex-1'>
                     <input type='text' placeholder='Name' id='name' maxLength='62' minLength='10' required
@@ -257,7 +273,7 @@ export default function CreateListing() {
                         </div>
                     ))}
                     <button disabled={loading || uploading} className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider'>
-                        {loading ? 'Creating' : ' Create Listing'}
+                        {loading ? 'Updating' : ' Update Listing'}
                     </button>
                     {error && <p className='text-red-700 text-center font-medium'>{error}</p>}
                 </div>
