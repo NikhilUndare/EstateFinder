@@ -199,7 +199,7 @@ export default function Profile() {
       <p className=' text-red-600 mt-3 font-semibold text-center'>{error ? error : ""}</p>
       <button onClick={handleShowListings} className='w-full text-lg font-semibold  text-green-600 hover:text-green-700 cursor-pointer hover:underline '>Show Listings</button>
        { userListings && userListings.length > 0 &&  <div className='flex justify-end mt-2 px-5'>
-        <CiCircleRemove onClick={() => setUserListings(false)} className='w-8 h-8 hover : shadow-2xl ' />
+        <CiCircleRemove onClick={() => setUserListings(false)} className='w-8 h-8 text-red-500 hover : shadow-2xl ' />
        </div> }
       <p className=' text-red-600 mt-3 font-semibold text-center'>{showListingError ? 'Error in showing Listings' : ''}</p>
       { userListings && userListings.length > 0 && 
@@ -213,10 +213,10 @@ export default function Profile() {
           userListings.map((listing) => (
             <div key={listing._id} className='p-2 mb-2 flex gap-2 justify-between items-center border border-gray-300'> 
                <Link to={`/listing/${listing._id}`} >
-                 <img className='w-20 h-20 object-contain' src={listing.imageUrls[0]} alt='listing image' />
+                 <img className='w-20 h-20 object-contain ' src={listing.imageUrls[0]} alt='listing image' />
                 </Link>
                 <Link className='flex-1 ml-4' to={`/listing/${listing._id}`}>
-                 <p className='font-semibold  text-gray-700  truncate hover:underline'>{listing.name}</p>
+                 <p className='font-semibold  text-gray-700   hover:underline'>{listing.name}</p>
                 </Link>
                 <div className='flex flex-col'> 
                 <Link to={`/update-listing/${listing._id}`}>
