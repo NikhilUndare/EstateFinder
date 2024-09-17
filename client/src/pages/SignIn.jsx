@@ -75,7 +75,7 @@ export default function SignIn() {
         <input type='email' placeholder='email' className='border p-3 rounded-lg ' id='email' onChange={handleChange} />
         <input  type='password' placeholder='password' className='border p-3 rounded-lg  ' id='password' onChange={handleChange}  />
           
-        <button disabled={loading} className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider'>
+        <button disabled={loading} className=' bg-gradient-to-b from-slate-800 to-slate-600 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider'>
           {loading ? 'Loading...' : 'Sign In'}
         </button>
         <Oauth/>

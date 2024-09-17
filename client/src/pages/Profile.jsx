@@ -187,10 +187,10 @@ export default function Profile() {
         <input type='text' defaultValue={currentUser.username} placeholder='username' className='border p-3 rounded-lg ' id='username'  onChange={handleClick} />
         <input type='email' defaultValue={currentUser.email} placeholder='email' className='border p-3 rounded-lg ' id='email'  onChange={handleClick}/>
         <input type='password' placeholder='password' className='border p-3 rounded-lg ' id='password' onChange={handleClick} />
-        <button disabled={loading}  className=' bg-gradient-to-b from-slate-700 to-slate-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider '>
+        <button disabled={loading}  className=' bg-gradient-to-b from-slate-800 to-slate-600 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider '>
           { loading ? 'Loading...' : 'Update'}
         </button>
-        <Link to={'/create-listing'} className=' text-center bg-gradient-to-b from-green-700 to-green-500 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider '>Create Listing</Link>
+        <Link to={'/create-listing'} className=' text-center bg-gradient-to-b from-green-800 to-green-600 p-3 rounded-xl text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider '>Create Listing</Link>
       </form>
       <div className='flex justify-between mt-5 mb-3 px-2'>
         <p onClick={handleDelete} className='font-semibold  text-red-600 hover:text-red-700 cursor-pointer hover:underline '>Delete Account</p>
