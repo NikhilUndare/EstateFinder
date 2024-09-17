@@ -5,6 +5,8 @@ import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import { FaShare, FaMapMarkerAlt, FaBath, FaBed, FaChair, FaParking } from "react-icons/fa";
+import { useSelector } from 'react-redux';
+import Contact from '../components/Contact';
 
 export default function Listing() {
     SwiperCore.use([Navigation]);
@@ -13,6 +15,8 @@ export default function Listing() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [contact ,setContact] = useState(false);
+    const { currentUser  } = useSelector((state) => state.user)
     //console.log(listing)
     useEffect(() => {
         const fetchListing = async () => {
@@ -130,9 +134,13 @@ export default function Listing() {
                                 }
                             </li>
                         </ul>
-                        <button  className=' bg-gradient-to-b from-slate-800 to-slate-600 p-3 mt-6 rounded-xl  text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider'>
-                            Contact landlord
+                        { currentUser && listing.userRef !== currentUser._id && !contact && (
+
+                        <button onClick={()=> setContact(true)} className=' bg-gradient-to-b from-slate-800 to-slate-600 p-3 mt-6 rounded-xl  text-white hover:opacity-90 uppercase disabled:opacity-80 tracking-wider'>
+                           Contact Landlord 
                         </button>
+                        ) }
+                        {contact && <Contact listing={listing} />}
                     </div>
                 </div>
             }
