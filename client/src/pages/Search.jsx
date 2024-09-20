@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import ListingCard from '../components/ListingCard';
 
 export default function Search() {
     const navigate = useNavigate();
-    const [loading ,setLoading] = useState(false);
-    const [listings ,setListings] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [listings, setListings] = useState([]);
     const [sideBarData, setSideBarData] = useState({
         searchTerm: '',
         type: 'all',
@@ -46,13 +47,13 @@ export default function Search() {
             });
         }
 
-        const fetchListings = async() => {
-          setLoading(true);
-          const searchQuery = urlParams.toString();
-          const res = await fetch(`api/listing/get?${searchQuery}`);
-          const data = await res.json();
-          setListings(data);
-          setLoading(false)
+        const fetchListings = async () => {
+            setLoading(true);
+            const searchQuery = urlParams.toString();
+            const res = await fetch(`api/listing/get?${searchQuery}`);
+            const data = await res.json();
+            setListings(data);
+            setLoading(false)
         }
         fetchListings();
 
@@ -103,7 +104,7 @@ export default function Search() {
                             onChange={handleChange}
                             className='border p-3 w-full rounded-lg' />
                     </div>
-                    <div className='flex flex-wrap items-center gap-4'>
+                    <div className='flex flex-wrap items-center gap-2'>
                         <label className='font-semibold'>Type :</label>
                         <div className='flex gap-2'>
                             <input type='checkbox' id='all' className='w-5'
@@ -163,8 +164,26 @@ export default function Search() {
                     </button>
                 </form>
             </div>
-            <div className='p-4'>
-                <h1 className='text-3xl text-slate-700 text-center font-semibold my-4  tracking-wide'>  Listing Results :</h1>
+            <div className=' flex-1'>
+                <h1 className='text-3xl text-slate-700  font-semibold mt-5 p-3  tracking-wide'>  Listing Results :</h1>
+                <div className='p-7 flex flex-wrap gap-4'>
+                    {!loading && listings.length === 0 && (
+                        <p className='text-xl text-slate-700'>No listing found!</p>
+                    )}
+                    {loading && (
+                        <p className='text-xl text-slate-700 text-center w-full'>
+                            Loading...
+                        </p>
+                    )}
+
+                    {
+                      !loading &&
+                      listings &&
+                      listings.map((listing) => (
+                        <ListingCard key={listing._id} listing={listing} />
+                      ))
+                    }
+                </div>
             </div>
         </div>
     )
