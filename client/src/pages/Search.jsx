@@ -6,6 +6,7 @@ export default function Search() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [listings, setListings] = useState([]);
+    const [showMore ,setShowMore] = useState(false)
     const [sideBarData, setSideBarData] = useState({
         searchTerm: '',
         type: 'all',
@@ -49,11 +50,18 @@ export default function Search() {
 
         const fetchListings = async () => {
             setLoading(true);
+            setShowMore(false);
             const searchQuery = urlParams.toString();
             const res = await fetch(`api/listing/get?${searchQuery}`);
             const data = await res.json();
+            if(data.length > 8){
+                setShowMore(true);
+            }else{
+                setShowMore(false)
+            }
             setListings(data);
             setLoading(false)
+            
         }
         fetchListings();
 
@@ -93,9 +101,23 @@ export default function Search() {
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`)
     }
+
+    const handleShowMore = async( ) => {
+        const numberOfListings = listings.length;
+        const startIndex = numberOfListings;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex' , startIndex);
+        const searchQuery = urlParams.toString();
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        if(data.length < 9){
+            setShowMore(false);
+        }
+        setListings([...listings,...data]);
+    }
     return (
         <div className='flex flex-col md:flex-row'>
-            <div className='p-7 border-b-2 md:border-r-2 md:min-h-screen'>
+            <div className=' p-7 border-b-2 md:border-r-2 md:min-h-screen'>
                 <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
                     <div className='flex items-center gap-2'>
                         <label className='whitespace-nowrap font-semibold'>Serach Term :</label>
@@ -165,10 +187,10 @@ export default function Search() {
                 </form>
             </div>
             <div className=' flex-1'>
-                <h1 className='text-3xl text-slate-700  font-semibold mt-5 p-3  tracking-wide'>  Listing Results :</h1>
+                <h1 className='text-3xl text-slate-700  font-semibold  p-7  tracking-wide'>  Listing Results :</h1>
                 <div className='p-7 flex flex-wrap gap-4'>
                     {!loading && listings.length === 0 && (
-                        <p className='text-xl text-slate-700'>No listing found!</p>
+                        <p className='text-xl  text-slate-700'>No listing found!</p>
                     )}
                     {loading && (
                         <p className='text-xl text-slate-700 text-center w-full'>
@@ -182,6 +204,14 @@ export default function Search() {
                       listings.map((listing) => (
                         <ListingCard key={listing._id} listing={listing} />
                       ))
+                    }
+
+                    {
+                        showMore && (
+                            <button onClick={handleShowMore} className='font-semibold p-3 text-green-700 hover:underline' >
+                                show more
+                            </button>
+                        )
                     }
                 </div>
             </div>
