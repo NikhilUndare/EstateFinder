@@ -56,27 +56,30 @@ export const Home = () => {
   return (
     <div>
       {/* top side */}
-      <div className='bg-slate-800'>
-        <div className=' text-white flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto'>
-          <h1 className='font-bold text-3xl lg:text-6xl'>
+      <div className='bg-slate-900 lg:min-h-screen flex items-center'>
+        <div className='text-gray-100 flex flex-col gap-6 p-6 md:p-28 max-w-6xl mx-auto text-center'>
+          <h1 className='font-extrabold text-4xl md:text-6xl lg:text-7xl leading-tight whitespace-pre-line'>
             EstateFinder makes it
-            <br />
             easy for you to find
-            <br />
             a perfect place
           </h1>
 
-          <div className='text-xs md:text-lg md:tracking-wide flex flex-col flex-wrap '>
-            Dive into the world of comfort and convenience as we connect you to the finest estate.
+          <div className='text-sm md:text-lg md:tracking-wide text-gray-300'>
+            Dive into the world of comfort and convenience as we connect you to the finest estates.
             <br />
-            Ensuring a perfect gateway tailored to your prefrences.
+            Ensuring a perfect gateway tailored to your preferences.
           </div>
-          <Link to={'/search'}>
-            <button className='font-semibold px-3 py-2 rounded-md transition ease-in-out delay-150 bg-indigo-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-600 duration-150'>get Started</button>
-          </Link>
 
+          <Link to={'/search'}>
+            <button className='font-semibold px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-700 to-indigo-500 hover:bg-indigo-600 transition-transform transform duration-200 ease-in-out hover:scale-105 shadow-lg'>
+              Get Started
+            </button>
+          </Link>
         </div>
       </div>
+
+
+
 
       {/* swiper */}
       <div>
@@ -162,7 +165,7 @@ export const Home = () => {
           )
         }
       </div>
-      {/* Footer*/ }
+      {/* Footer*/}
       <Footer />
     </div>
   )
