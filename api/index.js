@@ -5,11 +5,8 @@ import UserRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 import listingRouter from './routes/listing.route.js';
 import cookieParser from 'cookie-parser';
+import path from 'path'
 dotenv.config();
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
 
 mongoose.connect(process.env.MONGODB_URL)
  .then((response) => {
@@ -19,6 +16,16 @@ mongoose.connect(process.env.MONGODB_URL)
   console.log("connection to DB failed", err);
  });
 
+
+const __dirname = path.resolve();
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
+
+
+
+
 app.listen( 3000, ()=>{
   console.log("Server is running on Port 3000 ...")
 })
@@ -27,8 +34,10 @@ app.use('/api/user',UserRouter);
 app.use('/api/auth',authRouter);
 app.use('/api/listing',listingRouter);
 
-app.get('/',(req,res)=>{
-  res.send("Server is working")
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 })
 
 app.use((err,req,res,next)=>{
